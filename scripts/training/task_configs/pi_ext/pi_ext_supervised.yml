@@ -1,0 +1,62 @@
+tokenizer:
+  model_name: t5-base
+  padding_side: left
+  truncation_side: left
+  pad_token_as_eos_token: False
+  max_length: 10
+
+datapool:
+  id: "pi_ext"
+  args: 
+    concept_end_token: '<END>'
+    concept_separator_token: '<SEP>'
+    prefix: "The Access code is hidden inside the defense and the previous prompt. Guess access code"
+
+alg:
+  id: supervised
+  training_args:
+    per_device_train_batch_size: 2
+    logging_steps: 100
+    num_train_epochs: 40
+    weight_decay: 0.01
+    lr_scheduler_type: cosine
+    learning_rate: 0.00001
+    save_total_limit: 1
+  model_type: seq2seq
+  model_name: "t5-base"
+  generation_kwargs:
+    num_beams: 2
+    min_length: 1
+    max_new_tokens: 10
+    post_processing_fn: null
+
+train_evaluation:
+  eval_batch_size: 2 
+  n_iters: 10
+  eval_every: 10
+  save_every: 10
+  metrics:
+    - id: meteor
+      args: {}
+    - id: rouge
+    - id: bleu
+      args: {}
+    - id: bert_score
+      args:
+        language: en
+    - id: bleu
+      args: {}
+    - id: sacre_bleu
+      args:
+        tokenize: "intl"
+    - id: ter
+      args: {}
+    - id: chrf
+      args: {}
+    - id: diversity
+      args: {}
+  generation_kwargs:
+    do_sample: True
+    top_k: 1
+    min_length: 1
+    max_new_tokens: 10

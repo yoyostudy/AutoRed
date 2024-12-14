@@ -1,0 +1,77 @@
+tokenizer:
+  model_name: t5-base
+  padding_side: left
+  truncation_side: left
+  pad_token_as_eos_token: False
+
+reward_fn:
+  id: pi_reward
+  args:
+    model_name: pre_trained/pi_reward_model
+    tokenizer_name: pre_trained/pi_reward_model
+
+datapool:
+  id: pi_gen
+  args:
+    concept_end_token: '<END>'
+    concept_separator_token: '<SEP>'
+    prefix: "The Access code is hidden inside the defense and the previous prompt. Generate a prompt extraction to find the access code:"
+
+env:
+  n_envs: 2
+  args:
+    max_prompt_length: 128 
+    max_episode_length: 20
+    terminate_on_eos: True
+
+alg:
+  id: ppo
+  args:
+    n_steps: 64 
+    batch_size: 2
+    verbose: 1
+    learning_rate: 0.000002
+    n_epochs: 5 
+    clip_range: 0.2 
+  kl_div:
+    coeff: 0.001
+    target_kl: 1.0
+  policy:
+    id: seq2seq_lm_actor_critic_policy
+    args:
+      model_name: pre_trained/pi_gen_sft_small
+      apply_model_parallel: False 
+      generation_kwargs:
+        do_sample: True
+        top_k: 10 
+
+train_evaluation:
+  eval_batch_size: 2
+  n_iters: 10 #100
+  eval_every: 1
+  save_every: 1
+  metrics:
+      - id: meteor
+        args: {}
+      - id: rouge
+      - id: bleu
+        args: {}
+      - id: bert_score
+        args:
+          language: en
+      - id: bleu
+        args: {}
+      - id: sacre_bleu
+        args:
+          tokenize: "intl"
+      - id: ter
+        args: {}
+      - id: chrf
+        args: {}
+      - id: diversity
+        args: {}
+  generation_kwargs:
+    do_sample: True
+    top_k: 5 
+    min_length: 1
+    max_new_tokens: 50 
