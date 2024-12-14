@@ -1,4 +1,4 @@
-<h1 align="center"><img src="assets/autored-logo2.png" style="vertical-align: middle" width="50px"> <b>AutoRed</b>: Automated Attack Generation Framework for Red Teaming of Large Language Models</h1>  
+<h1 align="center"><img src="assets/autored-logo.png" style="vertical-align: middle" width="50px"> <b>AutoRed</b>: Automated Attack Generation Framework for Red Teaming of Large Language Models</h1>  
 
 
 🪪 LLMs pose privacy risks by retaining sensitive information in context memory, potentially leading to unintended data exposure.
